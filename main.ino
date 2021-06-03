@@ -11,6 +11,8 @@ Servo servo5_ext_right;
 Servo servo6_ext_left;
 
 void setup() {
+  Serial.begin(115200);
+
   pinMode(B_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(B_PIN), buttonChanged, CHANGE);
 
@@ -23,6 +25,10 @@ void setup() {
 }
 
 void loop() {
+  while (!isRun) {
+    delay(15);
+  }
+
   reset();
 
   // Fold top left side
@@ -62,11 +68,13 @@ void opServo(Servo servo, int targetPos) {
       currPos += currPos < targetPos ? 1 : -1;
       servo.write(currPos);
     }
-    delay(15);
+    delay(50);
   }
 }
 
 void buttonChanged() {
   delay(15);
   isRun = HIGH == digitalRead(B_PIN) ? true : false;
+  Serial.print("isRun: ");
+  Serial.println(isRun);
 }
