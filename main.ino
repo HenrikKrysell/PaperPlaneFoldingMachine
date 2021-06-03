@@ -1,7 +1,7 @@
 #include <Servo.h>
 #define B_PIN 1
 
-bool isRun = 0;
+bool isRun = false;
 
 Servo servo1_left_up;
 Servo servo2_right_up;
@@ -14,7 +14,7 @@ void setup() {
   Serial.begin(115200);
 
   pinMode(B_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(B_PIN), buttonChanged, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(B_PIN), buttonChanged, RISING);
 
   servo1_left_up.attach(2); // attaches the servo on pin 1 to the servo object
   servo2_right_up.attach(3);  
@@ -73,8 +73,6 @@ void opServo(Servo servo, int targetPos) {
 }
 
 void buttonChanged() {
+  isRun != isRun;
   delay(15);
-  isRun = HIGH == digitalRead(B_PIN) ? true : false;
-  Serial.print("isRun: ");
-  Serial.println(isRun);
 }
