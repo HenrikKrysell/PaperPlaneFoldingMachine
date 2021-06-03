@@ -1,4 +1,7 @@
 #include <Servo.h>
+#define B_PIN 1
+
+bool isRun = 0;
 
 Servo servo1_left_up;
 Servo servo2_right_up;
@@ -8,12 +11,15 @@ Servo servo5_ext_right;
 Servo servo6_ext_left;
 
 void setup() {
-  servo1_left_up.attach(1); // attaches the servo on pin 1 to the servo object
-  servo2_right_up.attach(2);  
-  servo3_left_down.attach(3);
-  servo4_right_down.attach(4);
-  servo5_ext_right.attach(5);
-  servo6_ext_left.attach(6);
+  pinMode(B_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(B_PIN), buttonChanged, CHANGE);
+
+  servo1_left_up.attach(2); // attaches the servo on pin 1 to the servo object
+  servo2_right_up.attach(3);  
+  servo3_left_down.attach(4);
+  servo4_right_down.attach(5);
+  servo5_ext_right.attach(6);
+  servo6_ext_left.attach(7);
 }
 
 void loop() {
@@ -51,15 +57,16 @@ void opServo(Servo servo, int targetPos) {
   }
 
   int currPos = servo.read();
-  if (currPos > targetPos) {
-    for (int pos = currPos; pos > targetPos; pos--) {
-          servo.write(pos);              // tell servo to go to position in variable 'pos'
-          delay(15);                       // waits 15ms for the servo to reach the position
+  while (currPos != targetPos) {
+    if (isRun) {
+      currPos += currPos < targetPos ? 1 : -1;
+      servo.write(currPos);
     }
-  } else {
-    for (int pos = currPos; pos < targetPos; pos++) {
-          servo.write(pos);              // tell servo to go to position in variable 'pos'
-          delay(15);                       // waits 15ms for the servo to reach the position
-    }    
+    delay(15);
   }
+}
+
+void buttonChanged() {
+  delay(15);
+  isRun = HIGH == digitalRead(B_PIN) ? true : false;
 }
