@@ -1,5 +1,5 @@
 #include <Servo.h>
-#define B_PIN 3
+#define B_PIN 2
 
 bool isRun = false;
 
@@ -25,8 +25,8 @@ void setup() {
   //pinMode(B_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(B_PIN), buttonChanged, RISING);
 
-  servo1_left_up.attach(7); // attaches the servo on pin 1 to the servo object
-  servo2_right_up.attach(6);  
+  servo1_left_up.attach(6); // attaches the servo on pin 1 to the servo object
+  servo2_right_up.attach(7);  
   // servo3_left_down.attach(4);
   // servo4_right_down.attach(5);
   // servo5_ext_right.attach(6);
@@ -34,6 +34,10 @@ void setup() {
 }
 
 void loop() {
+
+  servo1_left_up.write(servo1_left_up_startPos);
+  servo2_right_up.write(servo2_right_up_startPos);
+
   while (!isRun) {
     delay(15);
   }
@@ -88,6 +92,9 @@ void opServo(Servo servo, int targetPos) {
   }
 }
 
-void buttonChanged() {
+void buttonChanged() {  
+  detachInterrupt(digitalPinToInterrupt(B_PIN));
   isRun = true;
+  delay(100);
+  attachInterrupt(digitalPinToInterrupt(B_PIN), buttonChanged, RISING);
 }
